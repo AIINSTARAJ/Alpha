@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ARS: Atomic Reasoning System </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .input-section {
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        textarea::placeholder {
+            color: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #333;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 3rem;
+        }
+
+        .section {
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        .atomic-question {
+            background: #0a0a0a;
+            border-left: 4px solid #444;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .atomic-question:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .answer-text {
+            font-size: 1rem;
+            color: #aaa;
+            line-height: 1.7;
+            padding-left: 3rem;
+        }
+
+        .synthesis-box {
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .synthesis-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .insights-list {
+            list-style: none;
+        }
+
+        .insight-item {
+            background: #111111;
+            border-left: 3px solid #555;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        .insight-item:before {
+            content: "→";
+            margin-right: 1rem;
+            color: #888;
+            font-weight: 700;
+        }
+
+        .error {
+            background: #1a0000;
+            border: 1px solid #440000;
+            border-radius: 6px;
+            padding: 1.5rem;
+            color: #ff6666;
+            font-size: 1rem;
+            margin-top: 2rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #1a1a1a;
+            color: #555;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Atomic Reasoning System</h1>
+            <p class="subtitle">Decomposing complexity into atomic insights</p>
+        </header>
+
+        <div class="input-section">
+            <label for="query">Enter Your Complex Question</label>
+            <textarea 
+                id="query" 
+                placeholder="e.g., What are the environmental, economic, and social implications of widespread electric vehicle adoption in developing nations?"
+            ></textarea>
+            <button onclick="analyzeQuery()" id="analyzeBtn">
+                Analyze
+            </button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <span class="spinner"></span>
+            Processing atomic decomposition...
+        </div>
+
+        <div id="error" style="display: none;"></div>
+
+        <div id="results" class="results" style="display: none;">
+            <!-- Atomic Decomposition -->
+            <div class="section">
+                <h2 class="section-header">I. Atomic Decomposition</h2>
+                <div id="atomicQuestions"></div>
+            </div>
+
+            <!-- Atomic Reasoning -->
+            <div class="section">
+                <h2 class="section-header">II. Atomic Reasoning </h2>
+                <div id="atomicReasoning"></div>
+            </div>
+
+            <!-- Synthesis -->
+            <div class="section">
+                <h2 class="section-header">III. Synthesis</h2>
+                <div class="synthesis-box">
+                    <div id="synthesis" class="synthesis-text"></div>
+                    <h3 style="color: #ccc; margin-bottom: 1rem; font-size: 1.3rem;">Key Insights</h3>
+                    <ul id="insights" class="insights-list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Powered by Gemini Flash 2.0 • Atomic Reasoning Framework
+        </footer>
+    </div>
+
+    <script>
+        async function analyzeQuery() {
+            const query = document.getElementById('query').value.trim();
+            
+            if (!query) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Show loading, hide results/errors
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('analyzeBtn').disabled = true;
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'error') {
+                    throw new Error(data.message || 'Analysis failed');
+                }
+
+                displayResults(data);
+
+            } catch (error) {
+                const errorDiv = document.getElementById('error');
+                errorDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                errorDiv.style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            // Display atomic questions
+            const questionsDiv = document.getElementById('atomicQuestions');
+            questionsDiv.innerHTML = data.atomic_decomposition.map((q, i) => `
+                <div class="atomic-question">
+                    <span class="question-number">${i + 1}</span>
+                    <span class="question-text">${q}</span>
+                </div>
+            `).join('');
+
+            // Display atomic reasoning
+            const reasoningDiv = document.getElementById('atomicReasoning');
+            reasoningDiv.innerHTML = data.atomic_reasoning.map((item, i) => `
+                <div class="atomic-question">
+                    <div>
+                        <span class="question-number">${i + 1}</span>
+                        <span class="question-text">${item.question}</span>
+                    </div>
+                    <div class="answer-text">${item.answer}</div>
+                </div>
+            `).join('');
+
+            // Display synthesis
+            document.getElementById('synthesis').textContent = data.synthesis;
+
+            // Display insights
+            const insightsDiv = document.getElementById('insights');
+            insightsDiv.innerHTML = data.key_insights.map(insight => `
+                <li class="insight-item">${insight}</li>
+            `).join('');
+
+            // Show results
+            document.getElementById('results').style.display = 'block';
+        }
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('query').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeQuery();
+            }
+        });
+    </script>
+</body>
+</html>
