@@ -1,4 +1,4 @@
-let refinedTextCache = '';
+let refinedText = '';
 
 // Waitlist Modal
 function openWaitlistModal() {
@@ -32,7 +32,7 @@ async function submitWaitlist() {
             document.getElementById('waitlistEmail').value = '';
             setTimeout(() => {
                 closeWaitlistModal();
-            }, 2000);
+            }, 3000);
         }
     } catch (error) {
         alert('Failed to submit. Please try again.');
@@ -56,14 +56,14 @@ async function openRefineModal() {
         const response = await fetch('/refine', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text })
+            body: JSON.stringify({ Text: text })
         });
 
         const data = await response.json();
 
         if (data.status === 'success') {
-            refinedTextCache = data.text;
-            document.getElementById('refinedText').textContent = data.text;
+            refinedText = data.Text;
+            document.getElementById('refinedText').textContent = data.Text;
         } else {
             document.getElementById('refinedText').textContent = 'Error refining text';
         }
@@ -77,10 +77,14 @@ function closeRefineModal() {
 }
 
 function applyRefined() {
-    if (refinedTextCache) {
-        document.getElementById('query').value = refinedTextCache;
+    if (refinedText) {
+        document.getElementById('query').value = refinedText;
         closeRefineModal();
     }
+}
+
+function keepOriginal() {
+    closeRefineModal();
 }
 
 // Voice Input
@@ -178,7 +182,7 @@ function displayResults(data) {
                         <span class="question-number">${i + 1}</span>
                         <span class="question-text">${item.question}</span>
                     </div>
-                    <div class="answer-text">${item.answer}</div>
+                    <div class="answer-text">${item.answer.replace(/\*\*(.+?)\*\*/g, '<span class="highlight">$1</span>')}</div>
                 </div>
             `).join('');
 

@@ -77,7 +77,8 @@ def refine():
 
     return jsonify(
         {
-            'Text': refined
+            'Text': refined,
+            'status': 'success'
         }
     ), 200
 
