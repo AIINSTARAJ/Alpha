@@ -18,7 +18,7 @@ Utils = os.environ.get('UTILITY')
 
 Model = 'gemini-2.5-flash'
 
-Agent = 'gemini-2.0-flash'
+Agent = 'gemini-2.5-flash'
 
 """ Model Instantiation """
 agent = GoogleGenerativeAI(model=Agent, temperature=0.7, google_api_key=Utils)
